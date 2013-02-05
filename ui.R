@@ -1,5 +1,6 @@
 require(deSolve)
 require(shiny)
+require(ggplot2)
 
 shinyUI(pageWithSidebar(
   headerPanel("Two host SIR model"),
