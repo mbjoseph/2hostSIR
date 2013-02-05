@@ -47,12 +47,25 @@ shinyServer(function(input, output) {
     state <- with(parms, 
                   c(S1 = (b[1]-d[1])/dd[1], I1 = 1, R1 = 0, 
                     S2 = (b[2] - d[2]) / dd[2], I2 = 0, R2 = 0))
-    return(ode(state, times, derivs, parms))
+    # set up next-generation matrix and calculate dominant eigenvalue (community-level R0)
+    G <- array(dim=c(2,2))
+    G[1, 1] <- state["S1"]*beta[1, 1]/(alpha[1] + sigma[1] + d[1])/ifelse(tmode == "freq", sum(state), 1)
+    G[2, 2] <- state["S2"]*beta[2, 2]/(alpha[2] + sigma[2] + d[2])/ifelse(tmode == "freq", sum(state), 1)
+    G[1, 2] <- state["S2"]*beta[1, 2]/(alpha[1] + sigma[1] + d[1])/ifelse(tmode == "freq", sum(state), 1)
+    G[2, 1] <- state["S1"]*beta[2, 1]/(alpha[2] + sigma[2] + d[2])/ifelse(tmode == "freq", sum(state), 1)
+    R0 <- eigen(G)$values[1]
+    
+    return(list(res = ode(state, times, derivs, parms),
+                R0 = R0))
   }
   
 output$p1 <- reactivePlot(function() {
     times <- seq(0, input$tmax, by = input$tint)
-    res <- SIRsys(parms, times)
+    out <- SIRsys(parms, times)
+    res <- out$res
+    comR0 <- out$R0
+    Ititle <- substitute(paste("Community R"[0]*"= ", comR0,
+                               sep=""), list(comR0=comR0))
     d <- data.frame(timesteps = rep(times, 6), 
                     classes=gl(6, length(times), 
                                labels=c("Susceptible: species 1", "Susceptible: species 2", 
@@ -61,14 +74,18 @@ output$p1 <- reactivePlot(function() {
                     nums=c(res[,2], res[,5], res[,3], res[,6], res[,4], res[,7]))
     p <- ggplot(d) + geom_line(aes(x=timesteps, y=nums)) + 
       facet_wrap(~classes, scales="free", as.table="T", ncol=2) +
-      xlab("Time") + ylab("Number of individuals") + theme_bw()
+      xlab("Time") + ylab("Number of individuals") + theme_bw() + ggtitle(Ititle)
     print(p)
 }
 )
   
 output$p2 <- reactivePlot(function(){
     times <- seq(0, input$tmax, by = input$tint)
-    res <- SIRsys(parms, times)
+    out <- SIRsys(parms, times)
+    res <- out$res
+    comR0 <- out$R0
+    Ititle <- substitute(paste("Community R"[0]*"= ", comR0,
+                               sep=""), list(comR0=comR0))
     par(mfrow=c(1, 3))
     plot(res[,2], res[,5], type="l", 
          xlab="Susceptible individuals: species 1", 
@@ -78,7 +95,8 @@ output$p2 <- reactivePlot(function(){
     arrows(res[s, 2], res[s, 5], res[s+1, 2], res[s+1, 5], length=.05)
     plot(res[,3], res[,6], type="l",
          xlab="Infectious individuals: species 1", 
-         ylab="Infectious individuals: species 2")
+         ylab="Infectious individuals: species 2",
+         main=Ititle)
     arrows(res[s, 3], res[s, 6], res[s+1, 3], res[s+1, 6], length=.05)
     plot(res[,4], res[,7], type="l", 
          xlab="Recovered individuals: species 1", 
