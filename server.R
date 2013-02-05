@@ -61,7 +61,7 @@ output$p1 <- reactivePlot(function() {
                     nums=c(res[,2], res[,5], res[,3], res[,6], res[,4], res[,7]))
     p <- ggplot(d) + geom_line(aes(x=timesteps, y=nums)) + 
       facet_wrap(~classes, scales="free", as.table="T", ncol=2) +
-      xlab("Time") + ylab("Number of individuals") + theme_classic()
+      xlab("Time") + ylab("Number of individuals") + theme_bw()
     print(p)
 }
 )
