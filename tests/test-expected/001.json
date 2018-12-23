@@ -1,0 +1,56 @@
+{
+  "input": {
+    "b1": 1,
+    "b2": 1,
+    "beta11": 0.05,
+    "beta22": 0.05,
+    "cij12": 0.05,
+    "cij21": 0.05,
+    "d1": 0.5,
+    "d2": 0.5,
+    "m": 1.5,
+    "tint": 0.01,
+    "tmax": 3,
+    "tmode": "dens",
+    "tmode-selectized": ""
+  },
+  "output": {
+    "p1": {
+      "src": "[image data sha1: ec256e06f0fd463c9984853c834fc77c22fcc320]",
+      "width": 631,
+      "height": 400,
+      "coordmap": {
+        "panels": [
+          {
+            "domain": {
+              "left": -0.04,
+              "right": 1.04,
+              "bottom": -0.04,
+              "top": 1.04
+            },
+            "range": {
+              "left": 0,
+              "right": 631,
+              "bottom": 399,
+              "top": -1
+            },
+            "log": {
+              "x": null,
+              "y": null
+            },
+            "mapping": {
+
+            }
+          }
+        ],
+        "dims": {
+          "width": 631,
+          "height": 400
+        }
+      }
+    }
+  },
+  "export": {
+
+  }
+}
