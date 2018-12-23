@@ -59,7 +59,7 @@ shinyServer(function(input, output) {
                 R0 = R0))
   }
   
-output$p1 <- reactivePlot(function() {
+output$p1 <- renderPlot({
     times <- seq(0, input$tmax, by = input$tint)
     out <- SIRsys(parms, times)
     res <- out$res
@@ -79,7 +79,7 @@ output$p1 <- reactivePlot(function() {
 }
 )
   
-output$p2 <- reactivePlot(function(){
+output$p2 <- renderPlot({
     times <- seq(0, input$tmax, by = input$tint)
     out <- SIRsys(parms, times)
     res <- out$res
